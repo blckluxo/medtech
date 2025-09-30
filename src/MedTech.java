@@ -1,285 +1,311 @@
 import java.util.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
- * Clase Medico - Representa un medico en el sistema MedTech
- * Maneja la informacion del medico y sus horarios disponibles
+ * Clase principal MedTech - Sistema de gestion de citas medicas
+ * Punto de entrada de la aplicacion
  */
-public class Medico {
-    // Atributos principales
-    private String nombre;
-    private String rut;
-    private String especialidad;
-    private ArrayList<LocalDateTime> horariosDisponibles;
-    private ArrayList<Cita> citasAgendadas;
-    private String telefono;
-    private String email;
+public class MedTech {
     
-    // Constructor
-    public Medico(String nombre, String rut, String especialidad) {
-        this.nombre = nombre;
-        this.rut = rut;
-        this.especialidad = especialidad;
-        this.horariosDisponibles = new ArrayList<>();
-        this.citasAgendadas = new ArrayList<>();
-        this.telefono = "";
-        this.email = "";
-        inicializarHorarios();
+    private static ArrayList<Paciente> pacientesRegistrados = new ArrayList<>();
+    private static ArrayList<Medico> medicosRegistrados = new ArrayList<>();
+    public static Scanner scanner = new Scanner(System.in);
+    
+    public static void main(String[] args) {
+        System.out.println("===============================================");
+        System.out.println("    BIENVENIDO A MEDTECH                     ");
+        System.out.println("    Sistema de Gestion de Citas Medicas      ");
+        System.out.println("===============================================");
+        
+        // Inicializar datos de ejemplo
+        inicializarDatosDePrueba();
+        
+        // Menu principal
+        mostrarMenuPrincipal();
     }
-    
-    // Constructor con datos completos
-    public Medico(String nombre, String rut, String especialidad, String telefono, String email) {
-        this(nombre, rut, especialidad);
-        this.telefono = telefono;
-        this.email = email;
-    }
-    
-    // Getters y Setters
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    
-    public String getRut() { return rut; }
-    public void setRut(String rut) { this.rut = rut; }
-    
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
-    
-    public ArrayList<LocalDateTime> getHorariosDisponibles() { return horariosDisponibles; }
-    public void setHorariosDisponibles(ArrayList<LocalDateTime> horariosDisponibles) { 
-        this.horariosDisponibles = horariosDisponibles; 
-    }
-    
-    public ArrayList<Cita> getCitasAgendadas() { return citasAgendadas; }
-    public void setCitasAgendadas(ArrayList<Cita> citasAgendadas) { this.citasAgendadas = citasAgendadas; }
-    
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
-    
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
     
     /**
-     * Inicializa horarios disponibles para los próximos días
-     * (Horarios de ejemplo: 9:00, 10:00, 11:00, 14:00, 15:00, 16:00)
+     * Inicializa algunos medicos de ejemplo para probar el sistema
      */
-    private void inicializarHorarios() {
-        LocalDateTime fechaBase = LocalDateTime.now().plusDays(1); // Empezar desde mañana
+    private static void inicializarDatosDePrueba() {
+        // Crear medicos de ejemplo
+        Medico medico1 = new Medico("Ana Garcia Lopez", "12.345.678-9", "Cardiologia", "+56912345678", "ana.garcia@medtech.cl");
+        Medico medico2 = new Medico("Carlos Rodriguez Silva", "13.456.789-0", "Dermatologia", "+56923456789", "carlos.rodriguez@medtech.cl");
+        Medico medico3 = new Medico("Maria Fernandez Castro", "14.567.890-1", "Pediatria", "+56934567890", "maria.fernandez@medtech.cl");
+        Medico medico4 = new Medico("Jose Martinez Perez", "15.678.901-2", "Traumatologia", "+56945678901", "jose.martinez@medtech.cl");
+        Medico medico5 = new Medico("Laura Sanchez Morales", "16.789.012-3", "Ginecologia", "+56956789012", "laura.sanchez@medtech.cl");
         
-        for (int dia = 0; dia < 30; dia++) { // 30 días de disponibilidad
-            LocalDateTime fecha = fechaBase.plusDays(dia);
+        medicosRegistrados.add(medico1);
+        medicosRegistrados.add(medico2);
+        medicosRegistrados.add(medico3);
+        medicosRegistrados.add(medico4);
+        medicosRegistrados.add(medico5);
+        
+        System.out.println("Sistema inicializado con " + medicosRegistrados.size() + " medicos disponibles");
+    }
+    
+    /**
+     * Muestra el menu principal de la aplicacion
+     */
+    private static void mostrarMenuPrincipal() {
+        while (true) {
+            System.out.println("\n" + "=".repeat(50));
+            System.out.println("MEDTECH - MENU PRINCIPAL");
+            System.out.println("=".repeat(50));
+            System.out.println("1. Registrarse como paciente");
+            System.out.println("2. Iniciar sesion");
+            System.out.println("3. Ver medicos disponibles");
+            System.out.println("4. Ayuda");
+            System.out.println("5. Salir");
+            System.out.println("=".repeat(50));
+            System.out.print("Seleccione una opcion: ");
             
-            // Solo días de semana (lunes a viernes)
-            if (fecha.getDayOfWeek().getValue() <= 5) {
-                // Horarios de mañana: 9:00, 10:00, 11:00
-                horariosDisponibles.add(fecha.withHour(9).withMinute(0).withSecond(0).withNano(0));
-                horariosDisponibles.add(fecha.withHour(10).withMinute(0).withSecond(0).withNano(0));
-                horariosDisponibles.add(fecha.withHour(11).withMinute(0).withSecond(0).withNano(0));
+            try {
+                int opcion = Integer.parseInt(scanner.nextLine().trim());
                 
-                // Horarios de tarde: 14:00, 15:00, 16:00
-                horariosDisponibles.add(fecha.withHour(14).withMinute(0).withSecond(0).withNano(0));
-                horariosDisponibles.add(fecha.withHour(15).withMinute(0).withSecond(0).withNano(0));
-                horariosDisponibles.add(fecha.withHour(16).withMinute(0).withSecond(0).withNano(0));
+                switch (opcion) {
+                    case 1:
+                        registrarNuevoPaciente();
+                        break;
+                    case 2:
+                        iniciarSesion();
+                        break;
+                    case 3:
+                        mostrarMedicosDisponibles();
+                        break;
+                    case 4:
+                        mostrarAyuda();
+                        break;
+                    case 5:
+                        System.out.println("Gracias por usar MedTech!");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Opcion invalida. Intente nuevamente.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingrese un numero valido.");
             }
         }
-        
-        // Ordenar horarios por fecha
-        Collections.sort(horariosDisponibles);
     }
     
     /**
-     * Agrega un horario específico a los horarios disponibles
+     * Registra un nuevo paciente en el sistema
      */
-    public void agregarHorario(LocalDateTime horario) {
-        if (!horariosDisponibles.contains(horario)) {
-            horariosDisponibles.add(horario);
-            Collections.sort(horariosDisponibles);
+    private static void registrarNuevoPaciente() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("REGISTRO DE NUEVO PACIENTE");
+        System.out.println("=".repeat(50));
+        
+        Paciente nuevoPaciente = Paciente.registrarPaciente(pacientesRegistrados);
+        if (nuevoPaciente != null) {
+            System.out.println("Registro exitoso! Ya puede iniciar sesion.");
         }
     }
     
     /**
-     * Remueve un horario de los horarios disponibles (cuando se agenda una cita)
+     * Maneja el proceso de inicio de sesion
      */
-    public boolean removerHorario(LocalDateTime horario) {
-        return horariosDisponibles.remove(horario);
-    }
-    
-    /**
-     * Verifica si el médico tiene disponible un horario específico
-     */
-    public boolean tieneHorarioDisponible(LocalDateTime horario) {
-        return horariosDisponibles.contains(horario);
-    }
-    
-    /**
-     * Obtiene los horarios disponibles formateados como strings
-     */
-    public ArrayList<String> getHorariosFormateados() {
-        ArrayList<String> horariosFormateados = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static void iniciarSesion() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("INICIO DE SESION");
+        System.out.println("=".repeat(50));
         
-        for (LocalDateTime horario : horariosDisponibles) {
-            horariosFormateados.add(horario.format(formatter));
-        }
-        
-        return horariosFormateados;
-    }
-    
-    /**
-     * Muestra los próximos horarios disponibles (máximo 10)
-     */
-    public void mostrarProximosHorarios() {
-        if (horariosDisponibles.isEmpty()) {
-            System.out.println("❌ No hay horarios disponibles");
+        if (pacientesRegistrados.isEmpty()) {
+            System.out.println("No hay pacientes registrados. Debe registrarse primero.");
             return;
         }
         
-        System.out.println("📅 Próximos horarios disponibles para Dr/a. " + nombre + ":");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        
-        int limite = Math.min(10, horariosDisponibles.size());
-        for (int i = 0; i < limite; i++) {
-            System.out.println("   " + (i + 1) + ". " + horariosDisponibles.get(i).format(formatter));
-        }
-        
-        if (horariosDisponibles.size() > 10) {
-            System.out.println("   ... y " + (horariosDisponibles.size() - 10) + " horarios más");
+        Paciente pacienteAutenticado = Paciente.login(pacientesRegistrados);
+        if (pacienteAutenticado != null) {
+            mostrarMenuPaciente(pacienteAutenticado);
         }
     }
     
     /**
-     * Muestra las citas agendadas del médico
+     * Muestra el menu especifico para un paciente autenticado
      */
-    public void verCitasAgendadas() {
-        if (citasAgendadas.isEmpty()) {
-            System.out.println("📅 No tiene citas agendadas");
+    private static void mostrarMenuPaciente(Paciente paciente) {
+        while (true) {
+            System.out.println("\n" + "=".repeat(50));
+            System.out.println("MEDTECH - MENU PACIENTE");
+            System.out.println("Bienvenido/a: " + paciente.getNombre());
+            System.out.println("=".repeat(50));
+            System.out.println("1. Solicitar cita medica");
+            System.out.println("2. Ver mis citas agendadas");
+            System.out.println("3. Cancelar cita");
+            System.out.println("4. Modificar mis datos personales");
+            System.out.println("5. Consultar informacion de medicos");
+            System.out.println("6. Ver mi historial de atenciones");
+            System.out.println("7. Ver mis datos personales");
+            System.out.println("8. Eliminar mi perfil");
+            System.out.println("9. Cerrar sesion");
+            System.out.println("=".repeat(50));
+            System.out.print("Seleccione una opcion: ");
+            
+            try {
+                int opcion = Integer.parseInt(scanner.nextLine().trim());
+                
+                switch (opcion) {
+                    case 1:
+                        paciente.solicitarCita(medicosRegistrados);
+                        break;
+                    case 2:
+                        paciente.verCitasAgendadas();
+                        break;
+                    case 3:
+                        paciente.cancelarCita();
+                        break;
+                    case 4:
+                        paciente.modificarDatosPersonales();
+                        break;
+                    case 5:
+                        paciente.consultarMedicos(medicosRegistrados);
+                        break;
+                    case 6:
+                        paciente.verHistorialAtenciones();
+                        break;
+                    case 7:
+                        System.out.println("\n" + "=".repeat(50));
+                        System.out.println("MIS DATOS PERSONALES");
+                        System.out.println("=".repeat(50));
+                        paciente.mostrarDatosPersonales();
+                        break;
+                    case 8:
+                        if (paciente.eliminarPerfil(pacientesRegistrados, medicosRegistrados)) {
+                            return; // Salir del menu si se elimino el perfil
+                        }
+                        break;
+                    case 9:
+                        System.out.println("Sesion cerrada. Hasta pronto!");
+                        return;
+                    default:
+                        System.out.println("Opcion invalida. Intente nuevamente.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingrese un numero valido.");
+            }
+        }
+    }
+    
+    /**
+     * Muestra los medicos disponibles en el sistema
+     */
+    private static void mostrarMedicosDisponibles() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("MEDICOS DISPONIBLES EN MEDTECH");
+        System.out.println("=".repeat(50));
+        
+        if (medicosRegistrados.isEmpty()) {
+            System.out.println("No hay medicos registrados en el sistema");
             return;
         }
         
-        System.out.println("=== CITAS AGENDADAS - Dr/a. " + nombre + " ===");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        // Agrupar medicos por especialidad
+        Map<String, List<Medico>> medicosPorEspecialidad = new HashMap<>();
         
-        // Ordenar citas por fecha
-        citasAgendadas.sort((c1, c2) -> c1.getFechaHora().compareTo(c2.getFechaHora()));
-        
-        for (int i = 0; i < citasAgendadas.size(); i++) {
-            Cita cita = citasAgendadas.get(i);
-            System.out.println("📅 Cita " + (i + 1) + ":");
-            System.out.println("   Fecha: " + cita.getFechaHora().format(formatter));
-            System.out.println("   Paciente: " + cita.getPaciente().getNombre());
-            System.out.println("   RUT Paciente: " + cita.getPaciente().getRut());
-            System.out.println();
+        for (Medico medico : medicosRegistrados) {
+            medicosPorEspecialidad
+                .computeIfAbsent(medico.getEspecialidad(), k -> new ArrayList<>())
+                .add(medico);
         }
-    }
-    
-    /**
-     * Obtiene el número de citas agendadas para hoy
-     */
-    public int getCitasHoy() {
-        LocalDateTime hoy = LocalDateTime.now();
-        int citasHoy = 0;
         
-        for (Cita cita : citasAgendadas) {
-            if (cita.getFechaHora().toLocalDate().equals(hoy.toLocalDate())) {
-                citasHoy++;
+        // Mostrar medicos agrupados por especialidad
+        for (Map.Entry<String, List<Medico>> entry : medicosPorEspecialidad.entrySet()) {
+            System.out.println("\n" + entry.getKey().toUpperCase());
+            System.out.println("-".repeat(30));
+            
+            for (Medico medico : entry.getValue()) {
+                System.out.println("Dr/a. " + medico.getNombre());
+                System.out.println("   RUT: " + medico.getRut());
+                System.out.println("   Horarios disponibles: " + medico.getHorariosDisponibles().size());
+                if (!medico.getTelefono().isEmpty()) {
+                    System.out.println("   Telefono: " + medico.getTelefono());
+                }
+                System.out.println();
             }
         }
         
-        return citasHoy;
+        System.out.println("Para agendar una cita, debe registrarse e iniciar sesion.");
     }
     
     /**
-     * Obtiene estadísticas básicas del médico
+     * Muestra informacion de ayuda sobre el sistema
      */
-    public void mostrarEstadisticas() {
-        System.out.println("=== ESTADÍSTICAS - Dr/a. " + nombre + " ===");
-        System.out.println("🏥 Especialidad: " + especialidad);
-        System.out.println("📅 Citas agendadas: " + citasAgendadas.size());
-        System.out.println("📆 Citas hoy: " + getCitasHoy());
-        System.out.println("⏰ Horarios disponibles: " + horariosDisponibles.size());
-        System.out.println("📞 Teléfono: " + (telefono.isEmpty() ? "No registrado" : telefono));
-        System.out.println("📧 Email: " + (email.isEmpty() ? "No registrado" : email));
-    }
-    
-    /**
-     * Valida si una fecha está dentro del rango de disponibilidad del médico
-     */
-    public boolean esFechaValida(LocalDateTime fecha) {
-        LocalDateTime ahora = LocalDateTime.now();
-        LocalDateTime limite = ahora.plusDays(60); // 60 días máximo de anticipación
+    private static void mostrarAyuda() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("AYUDA - SISTEMA MEDTECH");
+        System.out.println("=".repeat(50));
         
-        return fecha.isAfter(ahora) && fecha.isBefore(limite);
-    }
-    
-    /**
-     * Busca el próximo horario disponible
-     */
-    public LocalDateTime getProximoHorarioDisponible() {
-        if (horariosDisponibles.isEmpty()) {
-            return null;
+        System.out.println("OBJETIVO:");
+        System.out.println("   MedTech es un sistema que facilita la gestion de citas medicas,");
+        System.out.println("   reduciendo errores y desorganizacion en el proceso.");
+        
+        System.out.println("\nFUNCIONALIDADES PRINCIPALES:");
+        System.out.println("   • Registro e inicio de sesion de pacientes");
+        System.out.println("   • Solicitud de citas medicas por especialidad");
+        System.out.println("   • Visualizacion de citas agendadas");
+        System.out.println("   • Cancelacion de citas (con politica de 24 horas)");
+        System.out.println("   • Modificacion de datos personales");
+        System.out.println("   • Consulta de informacion de medicos");
+        System.out.println("   • Historial de atenciones medicas");
+        
+        System.out.println("\nFORMATO DE RUT:");
+        System.out.println("   El RUT debe ingresarse en formato chileno: xx.xxx.xxx-x");
+        System.out.println("   Ejemplo: 12.345.678-9");
+        
+        System.out.println("\nPOLITICAS IMPORTANTES:");
+        System.out.println("   • Solo se puede tener una cita por horario");
+        System.out.println("   • Cancelaciones con menos de 24 horas generan sancion");
+        System.out.println("   • Las contrasenas deben tener minimo 6 caracteres");
+        
+        System.out.println("\nESPECIALIDADES DISPONIBLES:");
+        Set<String> especialidades = new HashSet<>();
+        for (Medico medico : medicosRegistrados) {
+            especialidades.add(medico.getEspecialidad());
+        }
+        for (String especialidad : especialidades) {
+            System.out.println("   • " + especialidad);
         }
         
-        LocalDateTime ahora = LocalDateTime.now();
-        for (LocalDateTime horario : horariosDisponibles) {
-            if (horario.isAfter(ahora)) {
-                return horario;
-            }
-        }
+        System.out.println("\nCONSEJOS DE USO:");
+        System.out.println("   • Mantenga sus datos actualizados");
+        System.out.println("   • Revise regularmente sus citas agendadas");
+        System.out.println("   • Cancele con anticipacion para evitar sanciones");
         
-        return null;
+        System.out.print("\nPresione Enter para continuar...");
+        scanner.nextLine();
     }
     
     /**
-     * Cancela una cita específica (devuelve el horario a disponibles)
+     * Obtiene estadisticas generales del sistema
      */
-    public boolean cancelarCita(Cita cita) {
-        if (citasAgendadas.remove(cita)) {
-            agregarHorario(cita.getFechaHora());
-            return true;
+    public static void mostrarEstadisticasGenerales() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("ESTADISTICAS DEL SISTEMA MEDTECH");
+        System.out.println("=".repeat(50));
+        
+        System.out.println("Pacientes registrados: " + pacientesRegistrados.size());
+        System.out.println("Medicos disponibles: " + medicosRegistrados.size());
+        
+        // Contar citas totales
+        int citasTotales = 0;
+        for (Paciente paciente : pacientesRegistrados) {
+            citasTotales += paciente.getCitasAgendadas().size();
         }
-        return false;
-    }
-    
-    /**
-     * Reagenda una cita a un nuevo horario
-     */
-    public boolean reagendarCita(Cita cita, LocalDateTime nuevoHorario) {
-        if (!tieneHorarioDisponible(nuevoHorario)) {
-            return false;
+        System.out.println("Citas agendadas: " + citasTotales);
+        
+        // Especialidades
+        Set<String> especialidades = new HashSet<>();
+        for (Medico medico : medicosRegistrados) {
+            especialidades.add(medico.getEspecialidad());
         }
+        System.out.println("Especialidades: " + especialidades.size());
         
-        LocalDateTime horarioAnterior = cita.getFechaHora();
-        cita.setFechaHora(nuevoHorario);
-        
-        // Devolver horario anterior a disponibles
-        agregarHorario(horarioAnterior);
-        // Quitar nuevo horario de disponibles
-        removerHorario(nuevoHorario);
-        
-        return true;
-    }
-    
-    @Override
-    public String toString() {
-        return "Medico{" +
-                "nombre='" + nombre + '\'' +
-                ", rut='" + rut + '\'' +
-                ", especialidad='" + especialidad + '\'' +
-                ", horariosDisponibles=" + horariosDisponibles.size() +
-                ", citasAgendadas=" + citasAgendadas.size() +
-                '}';
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Medico medico = (Medico) obj;
-        return Objects.equals(rut, medico.rut);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(rut);
+        // Horarios disponibles totales
+        int horariosDisponibles = 0;
+        for (Medico medico : medicosRegistrados) {
+            horariosDisponibles += medico.getHorariosDisponibles().size();
+        }
+        System.out.println("Horarios disponibles: " + horariosDisponibles);
     }
 }
