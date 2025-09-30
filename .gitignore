@@ -1,0 +1,26 @@
+# Archivos generados por Java
+*.class
+*.jar
+!MedTech.jar
+
+# Archivos de compilación
+*.log
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de configuración local
+config.properties
+local.properties
