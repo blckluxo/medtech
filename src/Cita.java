@@ -1,204 +1,173 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
-/**
- * Clase Cita - Representa una cita médica en el sistema MedTech
- * Conecta un paciente con un médico en un horario específico
- */
 public class Cita {
-    private Paciente paciente;
-    private Medico medico;
-    private LocalDateTime fechaHora;
-    private String estado;
-    private String observaciones;
-    
-    // Estados posibles de una cita
-    public static final String ESTADO_AGENDADA = "AGENDADA";
-    public static final String ESTADO_CONFIRMADA = "CONFIRMADA";
-    public static final String ESTADO_CANCELADA = "CANCELADA";
-    public static final String ESTADO_COMPLETADA = "COMPLETADA";
-    public static final String ESTADO_NO_ASISTIO = "NO_ASISTIO";
-    
-    // Constructor
-    public Cita(Paciente paciente, Medico medico, LocalDateTime fechaHora) {
-        this.paciente = paciente;
-        this.medico = medico;
-        this.fechaHora = fechaHora;
-        this.estado = ESTADO_AGENDADA;
-        this.observaciones = "";
-    }
-    
-    // Constructor con observaciones
-    public Cita(Paciente paciente, Medico medico, LocalDateTime fechaHora, String observaciones) {
-        this(paciente, medico, fechaHora);
-        this.observaciones = observaciones;
-    }
-    
-    // Getters y Setters
-    public Paciente getPaciente() { return paciente; }
-    public void setPaciente(Paciente paciente) { this.paciente = paciente; }
-    
-    public Medico getMedico() { return medico; }
-    public void setMedico(Medico medico) { this.medico = medico; }
-    
-    public LocalDateTime getFechaHora() { return fechaHora; }
-    public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
-    
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-    
-    public String getObservaciones() { return observaciones; }
-    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
-    
-    /**
-     * Confirma la cita (cambia el estado a CONFIRMADA)
-     */
-    public void confirmarCita() {
-        this.estado = ESTADO_CONFIRMADA;
-    }
-    
-    /**
-     * Cancela la cita (cambia el estado a CANCELADA)
-     */
-    public void cancelarCita() {
-        this.estado = ESTADO_CANCELADA;
-    }
-    
-    /**
-     * Marca la cita como completada
-     */
-    public void completarCita() {
-        this.estado = ESTADO_COMPLETADA;
-    }
-    
-    /**
-     * Marca que el paciente no asistió
-     */
-    public void marcarNoAsistio() {
-        this.estado = ESTADO_NO_ASISTIO;
-    }
-    
-    /**
-     * Verifica si la cita está activa (agendada o confirmada)
-     */
-    public boolean estaActiva() {
-        return estado.equals(ESTADO_AGENDADA) || estado.equals(ESTADO_CONFIRMADA);
-    }
-    
-    /**
-     * Verifica si la cita puede ser cancelada
-     */
-    public boolean puedeSerCancelada() {
-        return estaActiva();
-    }
-    
-    /**
-     * Obtiene información formateada de la cita
-     */
-    public String getInformacionCompleta() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        StringBuilder info = new StringBuilder();
-        
-        info.append("=== INFORMACIÓN DE CITA ===\n");
-        info.append("📅 Fecha y Hora: ").append(fechaHora.format(formatter)).append("\n");
-        info.append("👤 Paciente: ").append(paciente.getNombre()).append("\n");
-        info.append("🆔 RUT Paciente: ").append(paciente.getRut()).append("\n");
-        info.append("👨‍⚕️ Médico: Dr/a. ").append(medico.getNombre()).append("\n");
-        info.append("🏥 Especialidad: ").append(medico.getEspecialidad()).append("\n");
-        info.append("📋 Estado: ").append(estado).append("\n");
-        
-        if (!observaciones.isEmpty()) {
-            info.append("📝 Observaciones: ").append(observaciones).append("\n");
-        }
-        
-        return info.toString();
-    }
-    
-    /**
-     * Obtiene un resumen corto de la cita
-     */
-    public String getResumen() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM HH:mm");
-        return fechaHora.format(formatter) + " - " + medico.getNombre() + 
-               " (" + medico.getEspecialidad() + ") - " + estado;
-    }
-    
-    /**
-     * Calcula las horas que faltan para la cita
-     */
-    public long getHorasParaCita() {
-        LocalDateTime ahora = LocalDateTime.now();
-        return java.time.Duration.between(ahora, fechaHora).toHours();
-    }
-    
-    /**
-     * Verifica si la cita es el mismo día
-     */
-    public boolean esHoy() {
-        return fechaHora.toLocalDate().equals(LocalDateTime.now().toLocalDate());
-    }
-    
-    /**
-     * Verifica si la cita es mañana
-     */
-    public boolean esManana() {
-        return fechaHora.toLocalDate().equals(LocalDateTime.now().plusDays(1).toLocalDate());
-    }
-    
-    /**
-     * Verifica si la cita ya pasó
-     */
-    public boolean yaPaso() {
-        return fechaHora.isBefore(LocalDateTime.now());
-    }
-    
-    /**
-     * Obtiene el tiempo restante hasta la cita en formato legible
-     */
-    public String getTiempoRestante() {
-        if (yaPaso()) {
-            return "Cita pasada";
-        }
-        
-        LocalDateTime ahora = LocalDateTime.now();
-        java.time.Duration duracion = java.time.Duration.between(ahora, fechaHora);
-        
-        long dias = duracion.toDays();
-        long horas = duracion.toHours() % 24;
-        long minutos = duracion.toMinutes() % 60;
-        
-        if (dias > 0) {
-            return dias + " día(s), " + horas + " hora(s)";
-        } else if (horas > 0) {
-            return horas + " hora(s), " + minutos + " minuto(s)";
-        } else {
-            return minutos + " minuto(s)";
-        }
-    }
-    
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return "Cita{" +
-                "paciente=" + paciente.getNombre() +
-                ", medico=" + medico.getNombre() +
-                ", fechaHora=" + fechaHora.format(formatter) +
-                ", estado='" + estado + '\'' +
-                '}';
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Cita cita = (Cita) obj;
-        return paciente.equals(cita.paciente) && 
-               medico.equals(cita.medico) && 
-               fechaHora.equals(cita.fechaHora);
-    }
-    
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(paciente.getRut(), medico.getRut(), fechaHora);
-    }
+   private Paciente paciente;
+   private Medico medico;
+   private LocalDateTime fechaHora;
+   private String estado;
+   private String observaciones;
+   public static final String ESTADO_AGENDADA = "AGENDADA";
+   public static final String ESTADO_CONFIRMADA = "CONFIRMADA";
+   public static final String ESTADO_CANCELADA = "CANCELADA";
+   public static final String ESTADO_COMPLETADA = "COMPLETADA";
+   public static final String ESTADO_NO_ASISTIO = "NO_ASISTIO";
+
+   public Cita(Paciente var1, Medico var2, LocalDateTime var3) {
+      this.paciente = var1;
+      this.medico = var2;
+      this.fechaHora = var3;
+      this.estado = "AGENDADA";
+      this.observaciones = "";
+   }
+
+   public Cita(Paciente var1, Medico var2, LocalDateTime var3, String var4) {
+      this(var1, var2, var3);
+      this.observaciones = var4;
+   }
+
+   public Paciente getPaciente() {
+      return this.paciente;
+   }
+
+   public void setPaciente(Paciente var1) {
+      this.paciente = var1;
+   }
+
+   public Medico getMedico() {
+      return this.medico;
+   }
+
+   public void setMedico(Medico var1) {
+      this.medico = var1;
+   }
+
+   public LocalDateTime getFechaHora() {
+      return this.fechaHora;
+   }
+
+   public void setFechaHora(LocalDateTime var1) {
+      this.fechaHora = var1;
+   }
+
+   public String getEstado() {
+      return this.estado;
+   }
+
+   public void setEstado(String var1) {
+      this.estado = var1;
+   }
+
+   public String getObservaciones() {
+      return this.observaciones;
+   }
+
+   public void setObservaciones(String var1) {
+      this.observaciones = var1;
+   }
+
+   public void confirmarCita() {
+      this.estado = "CONFIRMADA";
+   }
+
+   public void cancelarCita() {
+      this.estado = "CANCELADA";
+   }
+
+   public void completarCita() {
+      this.estado = "COMPLETADA";
+   }
+
+   public void marcarNoAsistio() {
+      this.estado = "NO_ASISTIO";
+   }
+
+   public boolean estaActiva() {
+      return this.estado.equals("AGENDADA") || this.estado.equals("CONFIRMADA");
+   }
+
+   public boolean puedeSerCancelada() {
+      return this.estaActiva();
+   }
+
+   public String getInformacionCompleta() {
+      DateTimeFormatter var1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+      StringBuilder var2 = new StringBuilder();
+      var2.append("=== INFORMACIÓN DE CITA ===\n");
+      var2.append("\ud83d\udcc5 Fecha y Hora: ").append(this.fechaHora.format(var1)).append("\n");
+      var2.append("\ud83d\udc64 Paciente: ").append(this.paciente.getNombre()).append("\n");
+      var2.append("\ud83c\udd94 RUT Paciente: ").append(this.paciente.getRut()).append("\n");
+      var2.append("\ud83d\udc68\u200d⚕️ Médico: Dr/a. ").append(this.medico.getNombre()).append("\n");
+      var2.append("\ud83c\udfe5 Especialidad: ").append(this.medico.getEspecialidad()).append("\n");
+      var2.append("\ud83d\udccb Estado: ").append(this.estado).append("\n");
+      if (!this.observaciones.isEmpty()) {
+         var2.append("\ud83d\udcdd Observaciones: ").append(this.observaciones).append("\n");
+      }
+
+      return var2.toString();
+   }
+
+   public String getResumen() {
+      DateTimeFormatter var1 = DateTimeFormatter.ofPattern("dd/MM HH:mm");
+      String var10000 = this.fechaHora.format(var1);
+      return var10000 + " - " + this.medico.getNombre() + " (" + this.medico.getEspecialidad() + ") - " + this.estado;
+   }
+
+   public long getHorasParaCita() {
+      LocalDateTime var1 = LocalDateTime.now();
+      return Duration.between(var1, this.fechaHora).toHours();
+   }
+
+   public boolean esHoy() {
+      return this.fechaHora.toLocalDate().equals(LocalDateTime.now().toLocalDate());
+   }
+
+   public boolean esManana() {
+      return this.fechaHora.toLocalDate().equals(LocalDateTime.now().plusDays(1L).toLocalDate());
+   }
+
+   public boolean yaPaso() {
+      return this.fechaHora.isBefore(LocalDateTime.now());
+   }
+
+   public String getTiempoRestante() {
+      if (this.yaPaso()) {
+         return "Cita pasada";
+      } else {
+         LocalDateTime var1 = LocalDateTime.now();
+         Duration var2 = Duration.between(var1, this.fechaHora);
+         long var3 = var2.toDays();
+         long var5 = var2.toHours() % 24L;
+         long var7 = var2.toMinutes() % 60L;
+         if (var3 > 0L) {
+            return "" + var3 + " día(s), " + var5 + " hora(s)";
+         } else {
+            return var5 > 0L ? "" + var5 + " hora(s), " + var7 + " minuto(s)" : "" + var7 + " minuto(s)";
+         }
+      }
+   }
+
+   public String toString() {
+      DateTimeFormatter var1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+      String var10000 = this.paciente.getNombre();
+      return "Cita{paciente=" + var10000 + ", medico=" + this.medico.getNombre() + ", fechaHora=" + this.fechaHora.format(var1) + ", estado='" + this.estado + "'}";
+   }
+
+   public boolean equals(Object var1) {
+      if (this == var1) {
+         return true;
+      } else if (var1 != null && this.getClass() == var1.getClass()) {
+         Cita var2 = (Cita)var1;
+         return this.paciente.equals(var2.paciente) && this.medico.equals(var2.medico) && this.fechaHora.equals(var2.fechaHora);
+      } else {
+         return false;
+      }
+   }
+
+   public int hashCode() {
+      return Objects.hash(new Object[]{this.paciente.getRut(), this.medico.getRut(), this.fechaHora});
+   }
 }
