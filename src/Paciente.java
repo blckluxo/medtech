@@ -4,13 +4,13 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Clase Paciente - Representa un paciente en el sistema MedTech
- * Maneja el registro, autenticación y gestión de citas médicas
+ * Maneja el registro, autenticacion y gestion de citas medicas
  */
 public class Paciente {
     // Atributos principales
     private String nombre;
     private String rut;
-    private String contraseña;
+    private String contrasena;
     private String email;
     private String telefono;
     private int edad;
@@ -19,10 +19,10 @@ public class Paciente {
     private ArrayList<String> historialAtenciones;
     
     // Constructor
-    public Paciente(String nombre, String rut, String contraseña, String email, String telefono, int edad, String direccion) {
+    public Paciente(String nombre, String rut, String contrasena, String email, String telefono, int edad, String direccion) {
         this.nombre = nombre;
         this.rut = rut;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
         this.email = email;
         this.telefono = telefono;
         this.edad = edad;
@@ -31,9 +31,9 @@ public class Paciente {
         this.historialAtenciones = new ArrayList<>();
     }
     
-    // Constructor básico
-    public Paciente(String nombre, String rut, String contraseña) {
-        this(nombre, rut, contraseña, "", "", 0, "");
+    // Constructor basico
+    public Paciente(String nombre, String rut, String contrasena) {
+        this(nombre, rut, contrasena, "", "", 0, "");
     }
     
     // Getters y Setters
@@ -43,8 +43,8 @@ public class Paciente {
     public String getRut() { return rut; }
     public void setRut(String rut) { this.rut = rut; }
     
-    public String getContraseña() { return contraseña; }
-    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
     
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -62,7 +62,7 @@ public class Paciente {
     public ArrayList<String> getHistorialAtenciones() { return historialAtenciones; }
     
     /**
-     * Formatea el nombre correctamente: primera letra en mayúscula por palabra
+     * Formatea el nombre correctamente: primera letra en mayuscula por palabra
      * y valida que tenga al menos dos palabras (nombre y apellido)
      */
     public static String formatearNombre(String nombre) {
@@ -70,7 +70,7 @@ public class Paciente {
             return null;
         }
         
-        // Limpiar espacios extra y convertir a minúsculas
+        // Limpiar espacios extra y convertir a minusculas
         String nombreLimpio = nombre.trim().toLowerCase();
         
         // Dividir en palabras
@@ -81,17 +81,17 @@ public class Paciente {
             return null;
         }
         
-        // Formatear cada palabra: primera letra mayúscula
+        // Formatear cada palabra: primera letra mayuscula
         StringBuilder nombreFormateado = new StringBuilder();
         for (int i = 0; i < palabras.length; i++) {
             String palabra = palabras[i];
             if (palabra.length() > 0) {
-                // Primera letra mayúscula, resto minúsculas
+                // Primera letra mayuscula, resto minusculas
                 String palabraFormateada = palabra.substring(0, 1).toUpperCase() + 
                                           palabra.substring(1).toLowerCase();
                 nombreFormateado.append(palabraFormateada);
                 
-                // Agregar espacio entre palabras (excepto la última)
+                // Agregar espacio entre palabras (excepto la ultima)
                 if (i < palabras.length - 1) {
                     nombreFormateado.append(" ");
                 }
@@ -106,44 +106,44 @@ public class Paciente {
      */
     public static boolean validarEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
-            return true; // Email vacío es válido (opcional)
+            return true; // Email vacio es valido (opcional)
         }
         
         email = email.trim().toLowerCase();
         
-        // Patrón básico para email: xxx@xxx.xxx
+        // Patron basico para email: xxx@xxx.xxx
         String patron = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         
         return email.matches(patron);
     }
     
     /**
-     * Valida que el teléfono tenga mínimo 8 caracteres y solo números
+     * Valida que el telefono tenga minimo 8 caracteres y solo numeros
      */
     public static boolean validarTelefono(String telefono) {
         if (telefono == null || telefono.trim().isEmpty()) {
-            return true; // Teléfono vacío es válido (opcional)
+            return true; // Telefono vacio es valido (opcional)
         }
         
         // Limpiar espacios y caracteres especiales comunes
         String telefonoLimpio = telefono.trim().replaceAll("[\\s\\-\\+\\(\\)]", "");
         
-        // Verificar que tenga al menos 8 dígitos y solo números
+        // Verificar que tenga al menos 8 digitos y solo numeros
         return telefonoLimpio.matches("^\\d{8,}$");
     }
     
     /**
-     * Formatea el teléfono removiendo espacios y caracteres especiales
+     * Formatea el telefono removiendo espacios y caracteres especiales
      */
     public static String formatearTelefono(String telefono) {
         if (telefono == null || telefono.trim().isEmpty()) {
             return "";
         }
         
-        // Limpiar el teléfono manteniendo solo números
+        // Limpiar el telefono manteniendo solo numeros
         String telefonoLimpio = telefono.trim().replaceAll("[^\\d]", "");
         
-        // Agregar formato si es número chileno (+56)
+        // Agregar formato si es numero chileno (+56)
         if (telefonoLimpio.startsWith("56") && telefonoLimpio.length() >= 10) {
             return "+" + telefonoLimpio;
         } else if (telefonoLimpio.length() >= 8) {
@@ -154,31 +154,31 @@ public class Paciente {
     }
     
     /**
-     * Valida que la dirección tenga al menos una palabra y un número
+     * Valida que la direccion tenga al menos una palabra y un numero
      */
     public static boolean validarDireccion(String direccion) {
         if (direccion == null || direccion.trim().isEmpty()) {
-            return true; // Dirección vacía es válida (opcional)
+            return true; // Direccion vacia es valida (opcional)
         }
         
         String direccionLimpia = direccion.trim();
         
-        // Verificar que tenga al menos una letra (palabra) y un número
-        boolean tieneLetra = direccionLimpia.matches(".*[a-zA-ZÁ-Ýa-ý].*");
+        // Verificar que tenga al menos una letra (palabra) y un numero
+        boolean tieneLetra = direccionLimpia.matches(".*[a-zA-Z].*");
         boolean tieneNumero = direccionLimpia.matches(".*\\d.*");
         
         return tieneLetra && tieneNumero;
     }
     
     /**
-     * Valida que la edad sea un número válido entre 1 y 120
+     * Valida que la edad sea un numero valido entre 1 y 120
      */
     public static boolean validarEdad(int edad) {
         return edad >= 1 && edad <= 120;
     }
     
     /**
-     * Formatea la dirección: primera letra de cada palabra en mayúscula
+     * Formatea la direccion: primera letra de cada palabra en mayuscula
      */
     public static String formatearDireccion(String direccion) {
         if (direccion == null || direccion.trim().isEmpty()) {
@@ -191,11 +191,11 @@ public class Paciente {
         for (int i = 0; i < palabras.length; i++) {
             String palabra = palabras[i];
             if (palabra.length() > 0) {
-                // Si la palabra es un número, mantenerla así
+                // Si la palabra es un numero, mantenerla asi
                 if (palabra.matches("\\d+")) {
                     direccionFormateada.append(palabra);
                 } else {
-                    // Primera letra mayúscula para palabras
+                    // Primera letra mayuscula para palabras
                     direccionFormateada.append(palabra.substring(0, 1).toUpperCase())
                                       .append(palabra.substring(1));
                 }
@@ -217,18 +217,18 @@ public class Paciente {
             return false;
         }
         
-        // Verificar formato básico
+        // Verificar formato basico
         String patron = "\\d{1,2}\\.\\d{3}\\.\\d{3}-[0-9kK]";
         if (!rut.matches(patron)) {
             return false;
         }
         
-        // Extraer número y dígito verificador
+        // Extraer numero y digito verificador
         String[] partes = rut.split("-");
         String numero = partes[0].replace(".", "");
         char dv = partes[1].toLowerCase().charAt(0);
         
-        // Calcular dígito verificador
+        // Calcular digito verificador
         int suma = 0;
         int multiplicador = 2;
         
@@ -255,7 +255,7 @@ public class Paciente {
         
         System.out.println("=== REGISTRO DE PACIENTE ===");
         
-        // Validar RUT único
+        // Validar RUT unico
         String rut;
         boolean rutValido = false;
         boolean rutExiste = false;
@@ -266,7 +266,7 @@ public class Paciente {
             
             rutValido = validarRut(rut);
             if (!rutValido) {
-                System.out.println("❌ RUT inválido. Use el formato correcto.");
+                System.out.println("RUT invalido. Use el formato correcto.");
                 continue;
             }
             
@@ -280,7 +280,7 @@ public class Paciente {
             }
             
             if (rutExiste) {
-                System.out.println("❌ Este RUT ya está registrado en el sistema.");
+                System.out.println("Este RUT ya esta registrado en el sistema.");
             }
         } while (!rutValido || rutExiste);
         
@@ -293,21 +293,21 @@ public class Paciente {
             nombre = formatearNombre(nombreIngresado);
             
             if (nombre == null) {
-                System.out.println("❌ El nombre debe tener al menos dos palabras (nombre y apellido).");
-                System.out.println("💡 Ejemplo: Juan Pérez o María González López");
+                System.out.println("El nombre debe tener al menos dos palabras (nombre y apellido).");
+                System.out.println("Ejemplo: Juan Perez o Maria Gonzalez Lopez");
             }
         } while (nombre == null);
         
-        System.out.println("✅ Nombre formateado: " + nombre);
+        System.out.println("Nombre formateado: " + nombre);
         
-        String contraseña;
+        String contrasena;
         do {
-            System.out.print("Ingrese su contraseña (mínimo 6 caracteres): ");
-            contraseña = scanner.nextLine().trim();
-            if (contraseña.length() < 6) {
-                System.out.println("❌ La contraseña debe tener al menos 6 caracteres.");
+            System.out.print("Ingrese su contrasena (minimo 6 caracteres): ");
+            contrasena = scanner.nextLine().trim();
+            if (contrasena.length() < 6) {
+                System.out.println("La contrasena debe tener al menos 6 caracteres.");
             }
-        } while (contraseña.length() < 6);
+        } while (contrasena.length() < 6);
         
         // Solicitar y validar email
         String email;
@@ -318,37 +318,37 @@ public class Paciente {
             email = scanner.nextLine().trim().toLowerCase();
             
             if (email.isEmpty()) {
-                System.out.println("⚠️ Email no ingresado (opcional)");
+                System.out.println("Email no ingresado (opcional)");
                 emailValido = true;
             } else if (validarEmail(email)) {
-                System.out.println("✅ Email válido: " + email);
+                System.out.println("Email valido: " + email);
                 emailValido = true;
             } else {
-                System.out.println("❌ Formato de email inválido.");
-                System.out.println("💡 Ejemplo: juan.perez@gmail.com");
+                System.out.println("Formato de email invalido.");
+                System.out.println("Ejemplo: juan.perez@gmail.com");
                 emailValido = false;
             }
         } while (!emailValido);
         
-        // Solicitar y validar teléfono
+        // Solicitar y validar telefono
         String telefono = "";
         boolean telefonoValido = false;
         
         do {
-            System.out.print("Ingrese su teléfono (mínimo 8 dígitos) [Opcional - Enter para omitir]: ");
+            System.out.print("Ingrese su telefono (minimo 8 digitos) [Opcional - Enter para omitir]: ");
             String telefonoIngresado = scanner.nextLine().trim();
             
             if (telefonoIngresado.isEmpty()) {
                 telefono = "";
-                System.out.println("⚠️ Teléfono no ingresado (opcional)");
+                System.out.println("Telefono no ingresado (opcional)");
                 telefonoValido = true;
             } else if (validarTelefono(telefonoIngresado)) {
                 telefono = formatearTelefono(telefonoIngresado);
-                System.out.println("✅ Teléfono válido: " + telefono);
+                System.out.println("Telefono valido: " + telefono);
                 telefonoValido = true;
             } else {
-                System.out.println("❌ Teléfono inválido. Debe tener mínimo 8 dígitos y solo números.");
-                System.out.println("💡 Ejemplo: 987654321 o +56987654321");
+                System.out.println("Telefono invalido. Debe tener minimo 8 digitos y solo numeros.");
+                System.out.println("Ejemplo: 987654321 o +56987654321");
                 telefonoValido = false;
             }
         } while (!telefonoValido);
@@ -358,58 +358,58 @@ public class Paciente {
         boolean edadValida = false;
         
         do {
-            System.out.print("Ingrese su edad (debe ser un número entre 1 y 120): ");
+            System.out.print("Ingrese su edad (debe ser un numero entre 1 y 120): ");
             String edadIngresada = scanner.nextLine().trim();
             
             try {
                 edad = Integer.parseInt(edadIngresada);
                 
                 if (edad >= 1 && edad <= 120) {
-                    System.out.println("✅ Edad válida: " + edad + " años");
+                    System.out.println("Edad valida: " + edad + " anos");
                     edadValida = true;
                 } else {
-                    System.out.println("❌ La edad debe estar entre 1 y 120 años.");
+                    System.out.println("La edad debe estar entre 1 y 120 anos.");
                     edadValida = false;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("❌ La edad debe ser un número válido.");
-                System.out.println("💡 Ejemplo: 25, 30, 45");
+                System.out.println("La edad debe ser un numero valido.");
+                System.out.println("Ejemplo: 25, 30, 45");
                 edadValida = false;
             }
         } while (!edadValida);
         
-        // Solicitar y validar dirección
+        // Solicitar y validar direccion
         String direccion = "";
         boolean direccionValida = false;
         
         do {
-            System.out.print("Ingrese su dirección (debe incluir nombre de calle y número) [Opcional - Enter para omitir]: ");
+            System.out.print("Ingrese su direccion (debe incluir nombre de calle y numero) [Opcional - Enter para omitir]: ");
             String direccionIngresada = scanner.nextLine().trim();
             
             if (direccionIngresada.isEmpty()) {
                 direccion = "";
-                System.out.println("⚠️ Dirección no ingresada (opcional)");
+                System.out.println("Direccion no ingresada (opcional)");
                 direccionValida = true;
             } else if (validarDireccion(direccionIngresada)) {
                 direccion = formatearDireccion(direccionIngresada);
-                System.out.println("✅ Dirección válida: " + direccion);
+                System.out.println("Direccion valida: " + direccion);
                 direccionValida = true;
             } else {
-                System.out.println("❌ Dirección inválida. Debe incluir al menos una palabra y un número.");
-                System.out.println("💡 Ejemplo: Lautaro 255, Av. Libertador 1234, Pedro de Valdivia 2580");
+                System.out.println("Direccion invalida. Debe incluir al menos una palabra y un numero.");
+                System.out.println("Ejemplo: Lautaro 255, Av. Libertador 1234, Pedro de Valdivia 2580");
                 direccionValida = false;
             }
         } while (!direccionValida);
         
-        Paciente nuevoPaciente = new Paciente(nombre, rut, contraseña, email, telefono, edad, direccion);
+        Paciente nuevoPaciente = new Paciente(nombre, rut, contrasena, email, telefono, edad, direccion);
         pacientesRegistrados.add(nuevoPaciente);
         
-        System.out.println("✅ Paciente registrado exitosamente!");
+        System.out.println("Paciente registrado exitosamente!");
         return nuevoPaciente;
     }
     
     /**
-     * Autentica un paciente con RUT y contraseña
+     * Autentica un paciente con RUT y contrasena
      */
     public static Paciente login(ArrayList<Paciente> pacientesRegistrados) {
         Scanner scanner = MedTech.scanner;
@@ -418,27 +418,27 @@ public class Paciente {
         System.out.print("Ingrese su RUT: ");
         String rut = scanner.nextLine().trim();
         
-        System.out.print("Ingrese su contraseña: ");
-        String contraseña = scanner.nextLine().trim();
+        System.out.print("Ingrese su contrasena: ");
+        String contrasena = scanner.nextLine().trim();
         
         for (Paciente paciente : pacientesRegistrados) {
-            if (paciente.getRut().equals(rut) && paciente.getContraseña().equals(contraseña)) {
-                System.out.println("✅ Bienvenido/a " + paciente.getNombre());
+            if (paciente.getRut().equals(rut) && paciente.getContrasena().equals(contrasena)) {
+                System.out.println("Bienvenido/a " + paciente.getNombre());
                 return paciente;
             }
         }
         
-        System.out.println("❌ Credenciales inválidas. RUT o contraseña incorrectos.");
+        System.out.println("Credenciales invalidas. RUT o contrasena incorrectos.");
         return null;
     }
     
     /**
-     * Solicita una nueva cita médica
+     * Solicita una nueva cita medica
      */
     public void solicitarCita(ArrayList<Medico> medicos) {
         Scanner scanner = MedTech.scanner;
         
-        System.out.println("=== SOLICITAR CITA MÉDICA ===");
+        System.out.println("=== SOLICITAR CITA MEDICA ===");
         
         // Mostrar especialidades disponibles
         Set<String> especialidades = new HashSet<>();
@@ -454,22 +454,22 @@ public class Paciente {
             i++;
         }
         
-        System.out.print("Seleccione la especialidad (número): ");
+        System.out.print("Seleccione la especialidad (numero): ");
         int opcionEsp;
         try {
             opcionEsp = Integer.parseInt(scanner.nextLine()) - 1;
             if (opcionEsp < 0 || opcionEsp >= listaEspecialidades.size()) {
-                System.out.println("❌ Opción inválida");
+                System.out.println("Opcion invalida");
                 return;
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Debe ingresar un número válido");
+            System.out.println("Debe ingresar un numero valido");
             return;
         }
         
         String especialidadSeleccionada = listaEspecialidades.get(opcionEsp);
         
-        // Mostrar médicos de esa especialidad
+        // Mostrar medicos de esa especialidad
         ArrayList<Medico> medicosEspecialidad = new ArrayList<>();
         for (Medico medico : medicos) {
             if (medico.getEspecialidad().equals(especialidadSeleccionada)) {
@@ -478,35 +478,35 @@ public class Paciente {
         }
         
         if (medicosEspecialidad.isEmpty()) {
-            System.out.println("❌ No hay médicos disponibles para esa especialidad");
+            System.out.println("No hay medicos disponibles para esa especialidad");
             return;
         }
         
-        System.out.println("Médicos disponibles:");
+        System.out.println("Medicos disponibles:");
         for (int j = 0; j < medicosEspecialidad.size(); j++) {
             Medico med = medicosEspecialidad.get(j);
             System.out.println((j + 1) + ". Dr/a. " + med.getNombre() + " - " + med.getEspecialidad());
         }
         
-        System.out.print("Seleccione el médico (número): ");
+        System.out.print("Seleccione el medico (numero): ");
         int opcionMed;
         try {
             opcionMed = Integer.parseInt(scanner.nextLine()) - 1;
             if (opcionMed < 0 || opcionMed >= medicosEspecialidad.size()) {
-                System.out.println("❌ Opción inválida");
+                System.out.println("Opcion invalida");
                 return;
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Debe ingresar un número válido");
+            System.out.println("Debe ingresar un numero valido");
             return;
         }
         
         Medico medicoSeleccionado = medicosEspecialidad.get(opcionMed);
         
-        // Mostrar horarios disponibles del médico
+        // Mostrar horarios disponibles del medico
         ArrayList<LocalDateTime> horariosDisponibles = medicoSeleccionado.getHorariosDisponibles();
         if (horariosDisponibles.isEmpty()) {
-            System.out.println("❌ El médico no tiene horarios disponibles");
+            System.out.println("El medico no tiene horarios disponibles");
             return;
         }
         
@@ -516,16 +516,16 @@ public class Paciente {
             System.out.println((k + 1) + ". " + horariosDisponibles.get(k).format(formatter));
         }
         
-        System.out.print("Seleccione el horario (número): ");
+        System.out.print("Seleccione el horario (numero): ");
         int opcionHorario;
         try {
             opcionHorario = Integer.parseInt(scanner.nextLine()) - 1;
             if (opcionHorario < 0 || opcionHorario >= horariosDisponibles.size()) {
-                System.out.println("❌ Opción inválida");
+                System.out.println("Opcion invalida");
                 return;
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Debe ingresar un número válido");
+            System.out.println("Debe ingresar un numero valido");
             return;
         }
         
@@ -534,7 +534,7 @@ public class Paciente {
         // Verificar que el paciente no tenga cita en ese horario
         for (Cita cita : this.citasAgendadas) {
             if (cita.getFechaHora().equals(horarioSeleccionado)) {
-                System.out.println("❌ Ya tiene una cita agendada en ese horario");
+                System.out.println("Ya tiene una cita agendada en ese horario");
                 return;
             }
         }
@@ -545,18 +545,18 @@ public class Paciente {
         medicoSeleccionado.getCitasAgendadas().add(nuevaCita);
         medicoSeleccionado.getHorariosDisponibles().remove(horarioSeleccionado);
         
-        System.out.println("✅ Cita agendada exitosamente!");
-        System.out.println("📅 Fecha: " + horarioSeleccionado.format(formatter));
-        System.out.println("👨‍⚕️ Médico: Dr/a. " + medicoSeleccionado.getNombre());
-        System.out.println("🏥 Especialidad: " + medicoSeleccionado.getEspecialidad());
+        System.out.println("Cita agendada exitosamente!");
+        System.out.println("Fecha: " + horarioSeleccionado.format(formatter));
+        System.out.println("Medico: Dr/a. " + medicoSeleccionado.getNombre());
+        System.out.println("Especialidad: " + medicoSeleccionado.getEspecialidad());
     }
     
     /**
-     * Cancela una cita médica agendada
+     * Cancela una cita medica agendada
      */
     public void cancelarCita() {
         if (citasAgendadas.isEmpty()) {
-            System.out.println("❌ No tiene citas agendadas para cancelar");
+            System.out.println("No tiene citas agendadas para cancelar");
             return;
         }
         
@@ -572,28 +572,28 @@ public class Paciente {
                              " (" + cita.getMedico().getEspecialidad() + ")");
         }
         
-        System.out.print("Seleccione la cita a cancelar (número): ");
+        System.out.print("Seleccione la cita a cancelar (numero): ");
         int opcion;
         try {
             opcion = Integer.parseInt(scanner.nextLine()) - 1;
             if (opcion < 0 || opcion >= citasAgendadas.size()) {
-                System.out.println("❌ Opción inválida");
+                System.out.println("Opcion invalida");
                 return;
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Debe ingresar un número válido");
+            System.out.println("Debe ingresar un numero valido");
             return;
         }
         
         Cita citaACancelar = citasAgendadas.get(opcion);
         
-        // Verificar si la cancelación es con menos de 24 horas
+        // Verificar si la cancelacion es con menos de 24 horas
         LocalDateTime ahora = LocalDateTime.now();
         long horasAntes = java.time.Duration.between(ahora, citaACancelar.getFechaHora()).toHours();
         
         if (horasAntes < 24) {
-            System.out.println("⚠️ ATENCIÓN: Está cancelando con menos de 24 horas de anticipación.");
-            System.out.println("📋 Se aplicará una sanción por cancelación tardía.");
+            System.out.println("ATENCION: Esta cancelando con menos de 24 horas de anticipacion.");
+            System.out.println("Se aplicara una sancion por cancelacion tardia.");
         }
         
         // Remover la cita
@@ -601,7 +601,7 @@ public class Paciente {
         citaACancelar.getMedico().getCitasAgendadas().remove(citaACancelar);
         citaACancelar.getMedico().getHorariosDisponibles().add(citaACancelar.getFechaHora());
         
-        System.out.println("✅ Cita cancelada exitosamente");
+        System.out.println("Cita cancelada exitosamente");
     }
     
     /**
@@ -614,20 +614,20 @@ public class Paciente {
         System.out.println("Datos actuales:");
         mostrarDatosPersonales();
         
-        System.out.println("\n¿Qué desea modificar?");
+        System.out.println("\nQue desea modificar?");
         System.out.println("1. Nombre");
         System.out.println("2. Email");
-        System.out.println("3. Teléfono");
+        System.out.println("3. Telefono");
         System.out.println("4. Edad");
-        System.out.println("5. Dirección");
-        System.out.println("6. Contraseña");
-        System.out.print("Seleccione una opción: ");
+        System.out.println("5. Direccion");
+        System.out.println("6. Contrasena");
+        System.out.print("Seleccione una opcion: ");
         
         int opcion;
         try {
             opcion = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Opción inválida");
+            System.out.println("Opcion invalida");
             return;
         }
         
@@ -640,12 +640,12 @@ public class Paciente {
                     nuevoNombre = formatearNombre(nombreIngresado);
                     
                     if (nuevoNombre == null) {
-                        System.out.println("❌ El nombre debe tener al menos dos palabras (nombre y apellido).");
+                        System.out.println("El nombre debe tener al menos dos palabras (nombre y apellido).");
                     }
                 } while (nuevoNombre == null);
                 
                 this.nombre = nuevoNombre;
-                System.out.println("✅ Nombre actualizado: " + nuevoNombre);
+                System.out.println("Nombre actualizado: " + nuevoNombre);
                 break;
             case 2:
                 String nuevoEmail;
@@ -657,15 +657,15 @@ public class Paciente {
                     
                     if (nuevoEmail.isEmpty()) {
                         this.email = "";
-                        System.out.println("✅ Email eliminado");
+                        System.out.println("Email eliminado");
                         emailValido = true;
                     } else if (validarEmail(nuevoEmail)) {
                         this.email = nuevoEmail;
-                        System.out.println("✅ Email actualizado: " + nuevoEmail);
+                        System.out.println("Email actualizado: " + nuevoEmail);
                         emailValido = true;
                     } else {
-                        System.out.println("❌ Formato de email inválido.");
-                        System.out.println("💡 Ejemplo: juan.perez@gmail.com");
+                        System.out.println("Formato de email invalido.");
+                        System.out.println("Ejemplo: juan.perez@gmail.com");
                     }
                 } while (!emailValido);
                 break;
@@ -674,21 +674,21 @@ public class Paciente {
                 boolean telefonoValido = false;
                 
                 do {
-                    System.out.print("Nuevo teléfono (mínimo 8 dígitos) [Enter para eliminar]: ");
+                    System.out.print("Nuevo telefono (minimo 8 digitos) [Enter para eliminar]: ");
                     String telefonoIngresado = scanner.nextLine().trim();
                     
                     if (telefonoIngresado.isEmpty()) {
                         this.telefono = "";
-                        System.out.println("✅ Teléfono eliminado");
+                        System.out.println("Telefono eliminado");
                         telefonoValido = true;
                     } else if (validarTelefono(telefonoIngresado)) {
                         nuevoTelefono = formatearTelefono(telefonoIngresado);
                         this.telefono = nuevoTelefono;
-                        System.out.println("✅ Teléfono actualizado: " + nuevoTelefono);
+                        System.out.println("Telefono actualizado: " + nuevoTelefono);
                         telefonoValido = true;
                     } else {
-                        System.out.println("❌ Teléfono inválido. Debe tener mínimo 8 dígitos y solo números.");
-                        System.out.println("💡 Ejemplo: 987654321");
+                        System.out.println("Telefono invalido. Debe tener minimo 8 digitos y solo numeros.");
+                        System.out.println("Ejemplo: 987654321");
                     }
                 } while (!telefonoValido);
                 break;
@@ -697,7 +697,7 @@ public class Paciente {
                 boolean edadValida = false;
                 
                 do {
-                    System.out.print("Nueva edad (debe ser un número entre 1 y 120): ");
+                    System.out.print("Nueva edad (debe ser un numero entre 1 y 120): ");
                     String edadIngresada = scanner.nextLine().trim();
                     
                     try {
@@ -705,15 +705,15 @@ public class Paciente {
                         
                         if (nuevaEdad >= 1 && nuevaEdad <= 120) {
                             this.edad = nuevaEdad;
-                            System.out.println("✅ Edad actualizada: " + nuevaEdad + " años");
+                            System.out.println("Edad actualizada: " + nuevaEdad + " anos");
                             edadValida = true;
                         } else {
-                            System.out.println("❌ La edad debe estar entre 1 y 120 años.");
+                            System.out.println("La edad debe estar entre 1 y 120 anos.");
                             edadValida = false;
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("❌ La edad debe ser un número válido.");
-                        System.out.println("💡 Ejemplo: 25, 30, 45");
+                        System.out.println("La edad debe ser un numero valido.");
+                        System.out.println("Ejemplo: 25, 30, 45");
                         edadValida = false;
                     }
                 } while (!edadValida);
@@ -723,45 +723,45 @@ public class Paciente {
                 boolean direccionValida = false;
                 
                 do {
-                    System.out.print("Nueva dirección (debe incluir calle y número) [Enter para eliminar]: ");
+                    System.out.print("Nueva direccion (debe incluir calle y numero) [Enter para eliminar]: ");
                     String direccionIngresada = scanner.nextLine().trim();
                     
                     if (direccionIngresada.isEmpty()) {
                         this.direccion = "";
-                        System.out.println("✅ Dirección eliminada");
+                        System.out.println("Direccion eliminada");
                         direccionValida = true;
                     } else if (validarDireccion(direccionIngresada)) {
                         nuevaDireccion = formatearDireccion(direccionIngresada);
                         this.direccion = nuevaDireccion;
-                        System.out.println("✅ Dirección actualizada: " + nuevaDireccion);
+                        System.out.println("Direccion actualizada: " + nuevaDireccion);
                         direccionValida = true;
                     } else {
-                        System.out.println("❌ Dirección inválida. Debe incluir al menos una palabra y un número.");
-                        System.out.println("💡 Ejemplo: Lautaro 255, Av. Libertador 1234");
+                        System.out.println("Direccion invalida. Debe incluir al menos una palabra y un numero.");
+                        System.out.println("Ejemplo: Lautaro 255, Av. Libertador 1234");
                     }
                 } while (!direccionValida);
                 break;
             case 6:
-                System.out.print("Nueva contraseña: ");
-                String nuevaContraseña = scanner.nextLine().trim();
-                if (nuevaContraseña.length() >= 6) {
-                    this.contraseña = nuevaContraseña;
-                    System.out.println("✅ Contraseña actualizada");
+                System.out.print("Nueva contrasena: ");
+                String nuevaContrasena = scanner.nextLine().trim();
+                if (nuevaContrasena.length() >= 6) {
+                    this.contrasena = nuevaContrasena;
+                    System.out.println("Contrasena actualizada");
                 } else {
-                    System.out.println("❌ La contraseña debe tener al menos 6 caracteres");
+                    System.out.println("La contrasena debe tener al menos 6 caracteres");
                 }
                 break;
             default:
-                System.out.println("❌ Opción inválida");
+                System.out.println("Opcion invalida");
         }
     }
     
     /**
-     * Muestra las citas médicas agendadas
+     * Muestra las citas medicas agendadas
      */
     public void verCitasAgendadas() {
         if (citasAgendadas.isEmpty()) {
-            System.out.println("📅 No tiene citas agendadas");
+            System.out.println("No tiene citas agendadas");
             return;
         }
         
@@ -770,27 +770,27 @@ public class Paciente {
         
         for (int i = 0; i < citasAgendadas.size(); i++) {
             Cita cita = citasAgendadas.get(i);
-            System.out.println("📅 Cita " + (i + 1) + ":");
+            System.out.println("Cita " + (i + 1) + ":");
             System.out.println("   Fecha: " + cita.getFechaHora().format(formatter));
-            System.out.println("   Médico: Dr/a. " + cita.getMedico().getNombre());
+            System.out.println("   Medico: Dr/a. " + cita.getMedico().getNombre());
             System.out.println("   Especialidad: " + cita.getMedico().getEspecialidad());
             System.out.println();
         }
     }
     
     /**
-     * Consulta información de médicos disponibles
+     * Consulta informacion de medicos disponibles
      */
     public void consultarMedicos(ArrayList<Medico> medicos) {
         if (medicos.isEmpty()) {
-            System.out.println("❌ No hay médicos registrados en el sistema");
+            System.out.println("No hay medicos registrados en el sistema");
             return;
         }
         
-        System.out.println("=== INFORMACIÓN DE MÉDICOS ===");
+        System.out.println("=== INFORMACION DE MEDICOS ===");
         
         for (Medico medico : medicos) {
-            System.out.println("👨‍⚕️ Dr/a. " + medico.getNombre());
+            System.out.println("Dr/a. " + medico.getNombre());
             System.out.println("   RUT: " + medico.getRut());
             System.out.println("   Especialidad: " + medico.getEspecialidad());
             System.out.println("   Horarios disponibles: " + medico.getHorariosDisponibles().size());
@@ -799,11 +799,11 @@ public class Paciente {
     }
     
     /**
-     * Muestra el historial de atenciones médicas
+     * Muestra el historial de atenciones medicas
      */
     public void verHistorialAtenciones() {
         if (historialAtenciones.isEmpty()) {
-            System.out.println("📋 No tiene historial de atenciones");
+            System.out.println("No tiene historial de atenciones");
             return;
         }
         
@@ -820,37 +820,37 @@ public class Paciente {
         Scanner scanner = MedTech.scanner;
         
         System.out.println("=== ELIMINAR PERFIL ===");
-        System.out.println("⚠️ ATENCIÓN: Esta acción eliminará permanentemente su cuenta y todos sus datos.");
+        System.out.println("ATENCION: Esta accion eliminara permanentemente su cuenta y todos sus datos.");
         
         // Verificar si tiene citas agendadas
         if (!citasAgendadas.isEmpty()) {
-            System.out.println("❌ No puede eliminar su perfil mientras tenga citas agendadas.");
-            System.out.println("📅 Citas pendientes: " + citasAgendadas.size());
-            System.out.println("💡 Cancele todas sus citas antes de eliminar el perfil.");
+            System.out.println("No puede eliminar su perfil mientras tenga citas agendadas.");
+            System.out.println("Citas pendientes: " + citasAgendadas.size());
+            System.out.println("Cancele todas sus citas antes de eliminar el perfil.");
             return false;
         }
         
-        System.out.println("🔐 Para confirmar, ingrese su contraseña:");
-        String contraseñaConfirmacion = scanner.nextLine().trim();
+        System.out.println("Para confirmar, ingrese su contrasena:");
+        String contrasenaConfirmacion = scanner.nextLine().trim();
         
-        if (!this.contraseña.equals(contraseñaConfirmacion)) {
-            System.out.println("❌ Contraseña incorrecta. Eliminación cancelada.");
+        if (!this.contrasena.equals(contrasenaConfirmacion)) {
+            System.out.println("Contrasena incorrecta. Eliminacion cancelada.");
             return false;
         }
         
-        System.out.print("¿Está seguro que desea eliminar su perfil? (escriba 'ELIMINAR' para confirmar): ");
+        System.out.print("Esta seguro que desea eliminar su perfil? (escriba 'ELIMINAR' para confirmar): ");
         String confirmacion = scanner.nextLine().trim();
         
         if (!confirmacion.equals("ELIMINAR")) {
-            System.out.println("✅ Eliminación cancelada.");
+            System.out.println("Eliminacion cancelada.");
             return false;
         }
         
         // Eliminar el paciente de la lista
         pacientesRegistrados.remove(this);
         
-        System.out.println("🗑️ Perfil eliminado exitosamente.");
-        System.out.println("👋 Gracias por usar MedTech.");
+        System.out.println("Perfil eliminado exitosamente.");
+        System.out.println("Gracias por usar MedTech.");
         return true;
     }
     
@@ -858,13 +858,13 @@ public class Paciente {
      * Muestra los datos personales del paciente
      */
     public void mostrarDatosPersonales() {
-        System.out.println("👤 Nombre: " + nombre);
-        System.out.println("🆔 RUT: " + rut);
-        System.out.println("📧 Email: " + (email.isEmpty() ? "No registrado" : email));
-        System.out.println("📞 Teléfono: " + (telefono.isEmpty() ? "No registrado" : telefono));
-        System.out.println("🎂 Edad: " + (edad == 0 ? "No registrada" : edad + " años"));
-        System.out.println("🏠 Dirección: " + (direccion.isEmpty() ? "No registrada" : direccion));
-        System.out.println("📅 Citas agendadas: " + citasAgendadas.size());
+        System.out.println("Nombre: " + nombre);
+        System.out.println("RUT: " + rut);
+        System.out.println("Email: " + (email.isEmpty() ? "No registrado" : email));
+        System.out.println("Telefono: " + (telefono.isEmpty() ? "No registrado" : telefono));
+        System.out.println("Edad: " + (edad == 0 ? "No registrada" : edad + " anos"));
+        System.out.println("Direccion: " + (direccion.isEmpty() ? "No registrada" : direccion));
+        System.out.println("Citas agendadas: " + citasAgendadas.size());
     }
     
     @Override
