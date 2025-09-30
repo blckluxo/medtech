@@ -3,8 +3,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Clase Medico - Representa un médico en el sistema MedTech
- * Maneja la información del médico y sus horarios disponibles
+ * Clase Medico - Representa un medico en el sistema MedTech
+ * Maneja la informacion del medico y sus horarios disponibles
  */
 public class Medico {
     // Atributos principales
